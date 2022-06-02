@@ -1,4 +1,5 @@
 const { Pool } = require('pg');
+const InvariantError = require('../../exceptions/InvariantError');
 
 class AuthenticationsService {
   constructor() {
@@ -22,7 +23,7 @@ class AuthenticationsService {
     };
     const { rowCount } = await this._pool.query(query);
     if (!rowCount) {
-      throw new Error('refresh token invalid');
+      throw new InvariantError('refresh token invalid');
     }
   }
 
