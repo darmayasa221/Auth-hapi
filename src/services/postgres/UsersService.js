@@ -1,6 +1,9 @@
 const { Pool } = require('pg');
 const bcrypt = require('bcrypt');
 const { generateId } = require('../../utils');
+const InvariantError = require('../../exceptions/InvariantError');
+const NotFoundError = require('../../exceptions/NotFoundError');
+const AuthenticationError = require('../../exceptions/AuthenticationError');
 
 class UsersService {
   constructor() {
@@ -22,7 +25,7 @@ class UsersService {
     };
     const { rows, rowCount } = await this._pool.query(query);
     if (!rowCount) {
-      throw new Error('field add user!');
+      throw new InvariantError('field add user!');
     }
     return rows[0];
   }
@@ -35,7 +38,7 @@ class UsersService {
     };
     const { rows, rowCount } = await this._pool.query(query);
     if (!rowCount) {
-      throw new Error('user not found!');
+      throw new NotFoundError('user not found!');
     }
     return rows[0];
   }
@@ -48,7 +51,7 @@ class UsersService {
     };
     const { rowCount } = this._pool.query(query);
     if (!rowCount) {
-      throw new Error('failed to add user, Useranme been used');
+      throw new InvariantError('failed to add user, Useranme been used');
     }
   }
 
@@ -64,12 +67,12 @@ class UsersService {
 
     const { rows, rowCount } = await this._pool.query(query);
     if (!rowCount) {
-      throw new Error('the credential incorrect');
+      throw new AuthenticationError('the credential incorrect');
     }
     const { id, password: hashedPassword } = rows[0];
     const match = await bcrypt.compare(password, hashedPassword);
     if (!match) {
-      throw new Error('the credential incorrect');
+      throw new AuthenticationError('the credential incorrect');
     }
     return id;
   }
