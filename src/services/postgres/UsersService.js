@@ -49,8 +49,8 @@ class UsersService {
       WHERE username = $1`,
       values: [username],
     };
-    const { rowCount } = this._pool.query(query);
-    if (!rowCount) {
+    const { rowCount } = await this._pool.query(query);
+    if (rowCount) {
       throw new InvariantError('failed to add user, Useranme been used');
     }
   }

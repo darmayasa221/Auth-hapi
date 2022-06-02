@@ -15,11 +15,12 @@ class AuthenticationsHandlers {
     const id = await this._usersService.verifyUserCredential(payload);
     const accessToken = this._tokenManager.generateAccessToken({ id });
     const refreshToken = this._tokenManager.generateRefreshToken({ id });
-    await this._authenticationsService.addToken({ token: refreshToken });
+    await this._authenticationsService.addRefreshToken({ token: refreshToken });
     const response = h.response({
       status: 'success',
       data: {
         accessToken,
+        refreshToken,
       },
     });
     response.code(201);
@@ -47,7 +48,7 @@ class AuthenticationsHandlers {
       await this._authenticationsService.deleteRefreshToken(payload),
     );
     return h.response({
-      status: 'succecss',
+      status: 'success',
       message: 'refresh token been deleted!',
     });
   }
